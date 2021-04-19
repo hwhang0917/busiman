@@ -3,6 +3,7 @@ import { Employee } from 'src/employees/entities/employee.entity';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Document } from './document.entity';
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 
 export enum Status {
   Pending = 'Pending',
@@ -13,12 +14,15 @@ export enum Status {
 @Entity()
 export class Project extends CoreEntity {
   @Column()
+  @IsString()
   title: string;
 
   @Column()
+  @IsNumber()
   revenue: number;
 
   @Column({ type: 'enum', enum: Status })
+  @IsEnum(Status)
   status: Status;
 
   @OneToMany(() => Document, (document) => document.project)
