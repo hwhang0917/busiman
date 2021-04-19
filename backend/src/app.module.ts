@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from './common/common.module';
 import { EmployeesModule } from './employees/employees.module';
 import { ClientsModule } from './clients/clients.module';
+import { ProjectsModule } from './projects/projects.module';
 import { Employee } from './employees/entities/employee.entity';
 import { Client } from './clients/entities/client.entity';
-import { Organization } from './clients/entities/organization.entity';
+import { Project } from './projects/entities/project.entity';
 
 const isEnvDev = process.env.NODE_ENV === 'dev';
 
@@ -35,11 +36,12 @@ const isEnvDev = process.env.NODE_ENV === 'dev';
       database: process.env.DB_NAME,
       synchronize: isEnvDev,
       logging: isEnvDev,
-      entities: [Employee, Client, Organization],
+      entities: [Employee, Client, Project],
     }),
     CommonModule,
     EmployeesModule,
     ClientsModule,
+    ProjectsModule,
   ],
 })
 export class AppModule {}
