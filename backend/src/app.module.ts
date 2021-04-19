@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from './common/common.module';
+import { EmployeesModule } from './employees/employees.module';
+import { Employee } from './employees/entities/employee.entity';
 
 const isEnvDev = process.env.NODE_ENV === 'dev';
 
@@ -30,9 +32,10 @@ const isEnvDev = process.env.NODE_ENV === 'dev';
       database: process.env.DB_NAME,
       synchronize: isEnvDev,
       logging: isEnvDev,
-      entities: [],
+      entities: [Employee],
     }),
     CommonModule,
+    EmployeesModule,
   ],
 })
 export class AppModule {}
