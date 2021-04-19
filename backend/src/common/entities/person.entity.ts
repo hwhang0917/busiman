@@ -6,6 +6,12 @@ export class PersonEntity extends CoreEntity {
   name: string;
 
   @Column({ nullable: true })
+  photoUrl?: string;
+
+  @Column({ nullable: true })
+  contact?: string;
+
+  @Column({ nullable: true })
   title?: string;
 
   @Column({ nullable: true })
