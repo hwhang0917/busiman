@@ -9,6 +9,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { Employee } from './employees/entities/employee.entity';
 import { Client } from './clients/entities/client.entity';
 import { Project } from './projects/entities/project.entity';
+import { Document } from './projects/entities/document.entity';
 
 const isEnvDev = process.env.NODE_ENV === 'dev';
 
@@ -36,7 +37,7 @@ const isEnvDev = process.env.NODE_ENV === 'dev';
       database: process.env.DB_NAME,
       synchronize: isEnvDev,
       logging: isEnvDev,
-      entities: [Employee, Client, Project],
+      entities: [Employee, Client, Project, Document],
     }),
     CommonModule,
     EmployeesModule,

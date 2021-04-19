@@ -1,7 +1,8 @@
 import { Client } from 'src/clients/entities/client.entity';
-import { CoreEntity } from 'src/common/entities/core.entity';
 import { Employee } from 'src/employees/entities/employee.entity';
-import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
+import { CoreEntity } from 'src/common/entities/core.entity';
+import { Document } from './document.entity';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 
 export enum Status {
   Pending = 'Pending',
@@ -19,6 +20,9 @@ export class Project extends CoreEntity {
 
   @Column({ type: 'enum', enum: Status })
   status: Status;
+
+  @OneToMany(() => Document, (document) => document.project)
+  documents: Document[];
 
   @ManyToOne(() => Employee, (employee) => employee.leadingProjects, {
     onDelete: 'SET NULL',
