@@ -10,6 +10,7 @@ import { Employee } from './employees/entities/employee.entity';
 import { Client } from './clients/entities/client.entity';
 import { Project } from './projects/entities/project.entity';
 import { Document } from './projects/entities/document.entity';
+import { JwtModule } from './jwt/jwt.module';
 
 const isEnvDev = process.env.NODE_ENV === 'dev';
 
@@ -39,6 +40,7 @@ const isEnvDev = process.env.NODE_ENV === 'dev';
       logging: isEnvDev,
       entities: [Employee, Client, Project, Document],
     }),
+    JwtModule.forRoot({ privateKey: process.env.PRIVATE_KEY }),
     CommonModule,
     EmployeesModule,
     ClientsModule,
