@@ -1,5 +1,10 @@
 import * as Joi from 'joi';
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from './common/common.module';
@@ -11,6 +16,9 @@ import { Client } from './clients/entities/client.entity';
 import { Project } from './projects/entities/project.entity';
 import { Document } from './projects/entities/document.entity';
 import { JwtModule } from './jwt/jwt.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtMiddleware } from './jwt/jwt.middleware';
+import { AppController } from './app.controller';
 
 const isEnvDev = process.env.NODE_ENV === 'dev';
 
@@ -41,10 +49,18 @@ const isEnvDev = process.env.NODE_ENV === 'dev';
       entities: [Employee, Client, Project, Document],
     }),
     JwtModule.forRoot({ privateKey: process.env.PRIVATE_KEY }),
+    AuthModule,
     CommonModule,
     EmployeesModule,
     ClientsModule,
     ProjectsModule,
   ],
+  controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(JwtMiddleware)
+      .forRoutes({ path: '/', method: RequestMethod.ALL });
+  }
+}
