@@ -1,5 +1,5 @@
-import { InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { InternalServerErrorException } from '@nestjs/common';
 import { IsBoolean } from 'class-validator';
 import { LoginUserEntity } from 'src/common/entities/loginuser.entity';
 import { Document } from 'src/projects/entities/document.entity';

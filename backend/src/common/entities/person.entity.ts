@@ -2,7 +2,7 @@ import { IsString, IsUrl, Length } from 'class-validator';
 import { Column } from 'typeorm';
 import { CoreEntity } from './core.entity';
 
-export class PersonEntity extends CoreEntity {
+export abstract class PersonEntity extends CoreEntity {
   @Column()
   @IsString()
   name: string;
