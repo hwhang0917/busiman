@@ -13,8 +13,4 @@ export class CreateAccountInput {
   @ApiProperty()
   @IsString()
   readonly name: string;
-
-  @ApiProperty()
-  @IsString()
-  readonly adminKey: string;
 }

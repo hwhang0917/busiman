@@ -19,6 +19,7 @@ import { JwtModule } from './jwt/jwt.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AppController } from './app.controller';
+import { AdminModule } from './admin/admin.module';
 
 const isEnvDev = process.env.NODE_ENV === 'dev';
 
@@ -54,6 +55,7 @@ const isEnvDev = process.env.NODE_ENV === 'dev';
     EmployeesModule,
     ClientsModule,
     ProjectsModule,
+    AdminModule,
   ],
   controllers: [AppController],
 })

@@ -51,7 +51,15 @@ export class EmployeesService {
   }
   async findById(id: number): Promise<Employee> {
     const employee = await this.employees.findOne(id, {
-      select: ['id', 'email', 'name', 'photoUrl', 'introduction'],
+      select: [
+        'id',
+        'email',
+        'name',
+        'photoUrl',
+        'introduction',
+        'approvedByAdmin',
+        'isAdmin',
+      ],
     });
     if (!employee) {
       throw new NotFoundException(DNE.employee);

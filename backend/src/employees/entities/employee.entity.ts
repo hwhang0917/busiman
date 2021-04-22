@@ -17,6 +17,10 @@ import {
 export class Employee extends LoginUserEntity {
   @Column({ default: false })
   @IsBoolean()
+  approvedByAdmin: boolean;
+
+  @Column({ default: false })
+  @IsBoolean()
   isAdmin: boolean;
 
   @OneToMany(() => Project, (project) => project.projectManager)
