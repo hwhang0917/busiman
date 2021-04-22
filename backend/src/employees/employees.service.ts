@@ -12,6 +12,7 @@ import { JwtService } from 'src/jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dto/login.dto';
 import { UpdateAccountInput } from './dto/update-account.dto';
 import { CreateAccountInput } from './dto/create-account.dto';
+import { Conflicts, DNE, Invalid, Required } from 'src/errors/message.error';
 
 @Injectable()
 export class EmployeesService {
@@ -28,17 +29,17 @@ export class EmployeesService {
     name,
   }: CreateAccountInput): Promise<Employee> {
     if (!email) {
-      throw new BadRequestException('E-mail is reuqired.');
+      throw new BadRequestException(Required.email);
     }
     if (!password) {
-      throw new BadRequestException('Password is required.');
+      throw new BadRequestException(Required.password);
     }
     if (!name) {
-      throw new BadRequestException('Name is required.');
+      throw new BadRequestException(Required.name);
     }
     const exists = await this.employees.findOne({ email });
     if (exists) {
-      throw new ConflictException('E-mail already exists.');
+      throw new ConflictException(Conflicts.email);
     }
     const newUser = this.employees.create({ email, password, name });
     return await this.employees.save(newUser);
@@ -53,7 +54,7 @@ export class EmployeesService {
       select: ['id', 'email', 'name', 'photoUrl', 'introduction'],
     });
     if (!employee) {
-      throw new NotFoundException(`Employee with id:${id} not found.`);
+      throw new NotFoundException(DNE.employee);
     }
     return employee;
   }
@@ -61,15 +62,14 @@ export class EmployeesService {
   //   Auth
   async login({ email, password }: LoginInput): Promise<LoginOutput> {
     if (!email) {
-      throw new BadRequestException('E-mail is required.');
+      throw new BadRequestException(Required.email);
     }
     if (!password) {
-      throw new BadRequestException('Password is required.');
+      throw new BadRequestException(Required.password);
     }
     const employee = await this.employees.findOne({ email });
-    console.log('login');
     if (!employee) {
-      throw new UnauthorizedException('E-mail does not exists.');
+      throw new UnauthorizedException(DNE.email);
     }
     const validPassword = await employee.checkPassword(password);
     if (validPassword) {
@@ -77,7 +77,7 @@ export class EmployeesService {
       const token = this.jwtService.sign(payload);
       return { token };
     } else {
-      throw new UnauthorizedException('Invalid password.');
+      throw new UnauthorizedException(Invalid.password);
     }
   }
 
@@ -97,7 +97,7 @@ export class EmployeesService {
     const employee = await this.findById(id);
     if (email) {
       if (await this.employees.findOne({ email })) {
-        throw new ConflictException('E-mail already exists.');
+        throw new ConflictException(Conflicts.email);
       } else {
         employee.email = email;
       }
@@ -129,7 +129,10 @@ export class EmployeesService {
 
   //   Delete
   async delete(id: number): Promise<Employee> {
-    const employee = await this.employees.findOneOrFail(id);
+    const employee = await this.employees.findOne(id);
+    if (!employee) {
+      throw new NotFoundException(DNE.employee);
+    }
     return await this.employees.remove(employee);
   }
 }

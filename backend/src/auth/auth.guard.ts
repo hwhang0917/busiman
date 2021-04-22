@@ -1,6 +1,12 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
+import { Required } from 'src/errors/message.error';
 import { JwtService } from 'src/jwt/jwt.service';
 
 @Injectable()
@@ -17,7 +23,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
-    console.log(user);
-    return true;
+    if (user) return true;
+    throw new UnauthorizedException(Required.auth);
   }
 }
