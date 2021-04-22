@@ -7,9 +7,12 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { AuthUser } from 'src/auth/auth-user.decorator';
+import { Admin } from 'src/auth/decorators/admin.decorator';
 import { CreateAccountInput } from './dto/create-account.dto';
 import { UpdateAccountInput } from './dto/update-account.dto';
 import { EmployeesService } from './employees.service';
+import { Employee } from './entities/employee.entity';
 
 @Controller('employees')
 export class EmployeesController {
@@ -32,13 +35,15 @@ export class EmployeesController {
   @Put(':id')
   updateEmployee(
     @Param('id') id: number,
+    @AuthUser() authUser: Employee,
     @Body() updateDto: UpdateAccountInput,
   ) {
-    return this.employeesService.updateAccount(id, updateDto);
+    return this.employeesService.updateAccount(authUser, { id, ...updateDto });
   }
 
+  @Admin()
   @Delete(':id')
-  deleteEmployee(@Param('id') id: number) {
+  deleteEmployeeById(@Param('id') id: number) {
     return this.employeesService.delete(id);
   }
 }

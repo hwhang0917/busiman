@@ -11,15 +11,14 @@ import { CommonModule } from './common/common.module';
 import { EmployeesModule } from './employees/employees.module';
 import { ClientsModule } from './clients/clients.module';
 import { ProjectsModule } from './projects/projects.module';
+import { JwtModule } from './jwt/jwt.module';
+import { AuthModule } from './auth/auth.module';
 import { Employee } from './employees/entities/employee.entity';
 import { Client } from './clients/entities/client.entity';
 import { Project } from './projects/entities/project.entity';
 import { Document } from './projects/entities/document.entity';
-import { JwtModule } from './jwt/jwt.module';
-import { AuthModule } from './auth/auth.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AppController } from './app.controller';
-import { AdminModule } from './admin/admin.module';
 
 const isEnvDev = process.env.NODE_ENV === 'dev';
 
@@ -55,7 +54,6 @@ const isEnvDev = process.env.NODE_ENV === 'dev';
     EmployeesModule,
     ClientsModule,
     ProjectsModule,
-    AdminModule,
   ],
   controllers: [AppController],
 })

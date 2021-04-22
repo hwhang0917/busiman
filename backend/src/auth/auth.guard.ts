@@ -12,7 +12,7 @@ import {
   PUBLIC_CTX,
 } from 'src/common/common.constant';
 import { Employee } from 'src/employees/entities/employee.entity';
-import { Required } from 'src/errors/message.error';
+import { RequiredErr } from 'src/errors/message.error';
 import { JwtService } from 'src/jwt/jwt.service';
 
 @Injectable()
@@ -43,7 +43,7 @@ export class AuthGuard implements CanActivate {
 
     // Deny logged-out (public) access
     if (!user) {
-      throw new UnauthorizedException(Required.auth);
+      throw new UnauthorizedException(RequiredErr.auth);
     }
 
     // Execute public guard

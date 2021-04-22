@@ -12,7 +12,13 @@ import { JwtService } from 'src/jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dto/login.dto';
 import { UpdateAccountInput } from './dto/update-account.dto';
 import { CreateAccountInput } from './dto/create-account.dto';
-import { Conflicts, DNE, Invalid, Required } from 'src/errors/message.error';
+import {
+  AuthErr,
+  ConflictsErr,
+  DNEerr,
+  InvalidErr,
+  RequiredErr,
+} from 'src/errors/message.error';
 
 @Injectable()
 export class EmployeesService {
@@ -29,17 +35,17 @@ export class EmployeesService {
     name,
   }: CreateAccountInput): Promise<Employee> {
     if (!email) {
-      throw new BadRequestException(Required.email);
+      throw new BadRequestException(RequiredErr.email);
     }
     if (!password) {
-      throw new BadRequestException(Required.password);
+      throw new BadRequestException(RequiredErr.password);
     }
     if (!name) {
-      throw new BadRequestException(Required.name);
+      throw new BadRequestException(RequiredErr.name);
     }
     const exists = await this.employees.findOne({ email });
     if (exists) {
-      throw new ConflictException(Conflicts.email);
+      throw new ConflictException(ConflictsErr.email);
     }
     const newUser = this.employees.create({ email, password, name });
     return await this.employees.save(newUser);
@@ -62,7 +68,7 @@ export class EmployeesService {
       ],
     });
     if (!employee) {
-      throw new NotFoundException(DNE.employee);
+      throw new NotFoundException(DNEerr.employee);
     }
     return employee;
   }
@@ -70,14 +76,14 @@ export class EmployeesService {
   //   Auth
   async login({ email, password }: LoginInput): Promise<LoginOutput> {
     if (!email) {
-      throw new BadRequestException(Required.email);
+      throw new BadRequestException(RequiredErr.email);
     }
     if (!password) {
-      throw new BadRequestException(Required.password);
+      throw new BadRequestException(RequiredErr.password);
     }
     const employee = await this.employees.findOne({ email });
     if (!employee) {
-      throw new UnauthorizedException(DNE.email);
+      throw new UnauthorizedException(DNEerr.email);
     }
     const validPassword = await employee.checkPassword(password);
     if (validPassword) {
@@ -85,14 +91,15 @@ export class EmployeesService {
       const token = this.jwtService.sign(payload);
       return { token };
     } else {
-      throw new UnauthorizedException(Invalid.password);
+      throw new UnauthorizedException(InvalidErr.password);
     }
   }
 
   //   Update
   async updateAccount(
-    id: number,
+    authUser: Employee,
     {
+      id,
       email,
       password,
       name,
@@ -102,10 +109,13 @@ export class EmployeesService {
       title,
     }: UpdateAccountInput,
   ) {
+    if (authUser.id !== id && !authUser.isAdmin) {
+      throw new UnauthorizedException(AuthErr.update);
+    }
     const employee = await this.findById(id);
     if (email) {
       if (await this.employees.findOne({ email })) {
-        throw new ConflictException(Conflicts.email);
+        throw new ConflictException(ConflictsErr.email);
       } else {
         employee.email = email;
       }
@@ -139,7 +149,7 @@ export class EmployeesService {
   async delete(id: number): Promise<Employee> {
     const employee = await this.employees.findOne(id);
     if (!employee) {
-      throw new NotFoundException(DNE.employee);
+      throw new NotFoundException(DNEerr.employee);
     }
     return await this.employees.remove(employee);
   }

@@ -6,7 +6,7 @@ import {
 import { NextFunction, Request, Response } from 'express';
 import { X_JWT_HEADER } from 'src/common/common.constant';
 import { EmployeesService } from 'src/employees/employees.service';
-import { Invalid } from 'src/errors/message.error';
+import { InvalidErr } from 'src/errors/message.error';
 import { JwtService } from './jwt.service';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class JwtMiddleware implements NestMiddleware {
           const employee = await this.employeeService.findById(decoded['id']);
           req['user'] = employee;
         } catch (e) {
-          throw new UnauthorizedException(Invalid.token);
+          throw new UnauthorizedException(InvalidErr.token);
         }
       }
     }
