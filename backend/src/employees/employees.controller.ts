@@ -1,21 +1,18 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 import { Admin } from 'src/auth/decorators/admin.decorator';
 import { Approved } from 'src/auth/decorators/approved.decorator';
-import { Public } from 'src/auth/decorators/public.decorator';
-import { CreateAccountInput } from './dto/create-account.dto';
 import { UpdateAccountInput } from './dto/update-account.dto';
 import { EmployeesService } from './employees.service';
 import { Employee } from './entities/employee.entity';
+import { X_JWT_HEADER } from 'src/common/common.constant';
 
+@ApiTags('Employees')
+@ApiHeader({
+  name: X_JWT_HEADER,
+  description: 'Login JWT(Json Web Token)',
+})
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
@@ -29,12 +26,6 @@ export class EmployeesController {
   @Get(':id')
   getEmployeeById(@Param('id') id: number) {
     return this.employeesService.findById(id);
-  }
-
-  @Public()
-  @Post()
-  createEmployee(@Body() createAccountDto: CreateAccountInput) {
-    return this.employeesService.createAccount(createAccountDto);
   }
 
   @Approved()

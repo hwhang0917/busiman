@@ -38,17 +38,17 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
     );
 
+    // Execute public guard
+    if (publicGuard) {
+      return true;
+    }
+
     // Get logged in user
     const { user }: { user?: Employee } = context.switchToHttp().getRequest();
 
     // Deny logged-out (public) access
     if (!user) {
       throw new UnauthorizedException(RequiredErr.auth);
-    }
-
-    // Execute public guard
-    if (publicGuard) {
-      return true;
     }
 
     // Execute admin guard

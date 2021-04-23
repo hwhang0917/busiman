@@ -7,7 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiHeader } from '@nestjs/swagger';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { Approved } from 'src/auth/decorators/approved.decorator';
 import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 import { X_JWT_HEADER } from 'src/common/common.constant';
@@ -16,6 +16,7 @@ import { Employee } from 'src/employees/entities/employee.entity';
 import { ClientsService } from './clients.service';
 import { CreateClientInput } from './dto/create-client.dto';
 
+@ApiTags('Clients')
 @ApiHeader({
   name: X_JWT_HEADER,
   description: 'Login JWT(Json Web Token)',
