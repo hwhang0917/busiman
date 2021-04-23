@@ -11,6 +11,7 @@ export const ConflictsErr = {
 export const DNEerr = {
   employee: 'Employee does not exists.',
   email: 'E-mail does not exists.',
+  client: 'Client does not exists.',
 };
 
 export const RequiredErr = {

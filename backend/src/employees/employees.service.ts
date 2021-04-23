@@ -120,24 +120,13 @@ export class EmployeesService {
         employee.email = email;
       }
     }
-    if (password) {
-      employee.password = password;
-    }
-    if (name) {
-      employee.name = name;
-    }
-    if (photoUrl) {
-      employee.photoUrl = photoUrl;
-    }
-    if (contact) {
-      employee.contact = contact;
-    }
-    if (introduction) {
-      employee.introduction = introduction;
-    }
-    if (title) {
-      employee.title = title;
-    }
+    if (password) employee.password = password;
+    if (name) employee.name = name;
+    if (photoUrl) employee.photoUrl = photoUrl;
+    if (contact) employee.contact = contact;
+    if (introduction) employee.introduction = introduction;
+    if (title) employee.title = title;
+
     try {
       return await this.employees.save(employee);
     } catch (e) {
