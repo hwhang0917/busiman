@@ -144,6 +144,14 @@ export class EmployeesService {
       throw e;
     }
   }
+  async approveEmployee(id: number) {
+    const employee = await this.employees.findOne(id);
+    if (!employee) {
+      throw new NotFoundException(DNEerr.employee);
+    }
+    employee.approvedByAdmin = true;
+    return await this.employees.save(employee);
+  }
 
   //   Delete
   async delete(id: number): Promise<Employee> {

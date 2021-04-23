@@ -42,6 +42,12 @@ export class EmployeesController {
   }
 
   @Admin()
+  @Put(':id/approve')
+  approveEmployee(@Param('id') id: number) {
+    return this.employeesService.approveEmployee(id);
+  }
+
+  @Admin()
   @Delete(':id')
   deleteEmployeeById(@Param('id') id: number) {
     return this.employeesService.delete(id);

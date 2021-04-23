@@ -12,7 +12,7 @@ import {
   PUBLIC_CTX,
 } from 'src/common/common.constant';
 import { Employee } from 'src/employees/entities/employee.entity';
-import { RequiredErr } from 'src/errors/message.error';
+import { AuthErr, RequiredErr } from 'src/errors/message.error';
 import { JwtService } from 'src/jwt/jwt.service';
 
 @Injectable()
@@ -54,13 +54,13 @@ export class AuthGuard implements CanActivate {
     // Execute admin guard
     if (adminGuard) {
       if (user.isAdmin) return true;
-      return false;
+      throw new UnauthorizedException(AuthErr.admin);
     }
 
     // Execute approved user guard
     if (approvedUserGuard) {
       if (user.approvedByAdmin) return true;
-      return false;
+      throw new UnauthorizedException(AuthErr.approved);
     }
 
     // No guard (only login auth)

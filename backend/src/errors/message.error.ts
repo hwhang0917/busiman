@@ -21,5 +21,7 @@ export const RequiredErr = {
 };
 
 export const AuthErr = {
+  admin: 'Only admin can do this.',
+  approved: 'Only approved employees can do this.',
   update: 'Account owner or admin can edit.',
 };
