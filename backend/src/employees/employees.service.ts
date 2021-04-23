@@ -110,7 +110,7 @@ export class EmployeesService {
     }: UpdateAccountInput,
   ) {
     if (authUser.id !== id && !authUser.isAdmin) {
-      throw new UnauthorizedException(AuthErr.update);
+      throw new UnauthorizedException(AuthErr.account);
     }
     const employee = await this.findById(id);
     if (email) {

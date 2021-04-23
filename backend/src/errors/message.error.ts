@@ -12,6 +12,8 @@ export const DNEerr = {
   employee: 'Employee does not exists.',
   email: 'E-mail does not exists.',
   client: 'Client does not exists.',
+  project: 'Project does not exists.',
+  document: 'Document does not exists.',
 };
 
 export const RequiredErr = {
@@ -24,5 +26,7 @@ export const RequiredErr = {
 export const AuthErr = {
   admin: 'Only admin can do this.',
   approved: 'Only approved employees can do this.',
-  update: 'Account owner or admin can edit.',
+  account: 'Account owner or admin can edit.',
+  project: 'Project manager or admin can edit/delete.',
+  document: 'Document contributor or admin can edit/delete.',
 };

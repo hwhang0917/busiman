@@ -11,7 +11,7 @@ async function bootstrap() {
     .setTitle('Busiman')
     .setDescription('Business Management API')
     .setVersion('1.0')
-    .addTag('busiman')
+    .addTag('Busiman')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

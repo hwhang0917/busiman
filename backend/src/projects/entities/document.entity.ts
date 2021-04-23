@@ -10,7 +10,13 @@ export class Document extends CoreEntity {
   @IsString()
   title: string;
 
-  @ManyToOne(() => Project, (project) => project.documents)
+  @Column()
+  @IsString()
+  documentUrl: string;
+
+  @ManyToOne(() => Project, (project) => project.documents, {
+    onDelete: 'CASCADE',
+  })
   project: Project;
 
   @ManyToMany(() => Employee, (employee) => employee.documents)
