@@ -6,9 +6,17 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from 'src/employees/entities/employee.entity';
 import { AuthErr, DNEerr } from 'src/errors/message.error';
-import { Repository } from 'typeorm';
+import {
+  Between,
+  ILike,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { CreateDocumentInput } from './dto/create-document.dto';
 import { CreateProjectInput } from './dto/create-project.dto';
+import { FilterDocumentInput } from './dto/filter-documents.dto';
+import { FilterProjectInput } from './dto/filter-project.dto';
 import { UpdateDocumentInput } from './dto/update-document.dto';
 import { UpdateProjectInput } from './dto/update-project.dto';
 import { Document } from './entities/document.entity';
@@ -20,6 +28,8 @@ export class ProjectsService {
     @InjectRepository(Project) private readonly projects: Repository<Project>,
     @InjectRepository(Document)
     private readonly documents: Repository<Document>,
+    @InjectRepository(Employee)
+    private readonly employees: Repository<Employee>,
   ) {}
 
   //   Create
@@ -52,7 +62,8 @@ export class ProjectsService {
       project,
       contributors: [authUser],
     });
-    project.documents.push(newDocument);
+    if (project.documents) project.documents.push(newDocument);
+    else project.documents = [newDocument];
     try {
       await this.projects.save(project);
       return await this.documents.save(newDocument);
@@ -91,7 +102,7 @@ export class ProjectsService {
     authUser: Employee,
     projectId: number,
     documentId: number,
-    { title, documentUrl }: UpdateDocumentInput,
+    { title, documentUrl, contributorId }: UpdateDocumentInput,
   ) {
     const project = await this.projects.findOne(projectId);
     if (!project) {
@@ -110,6 +121,14 @@ export class ProjectsService {
 
     if (title) document.title = title;
     if (documentUrl) document.documentUrl = documentUrl;
+    if (contributorId) {
+      const employee = await this.employees.findOne(contributorId);
+      if (!employee) {
+        throw new NotFoundException(DNEerr.employee);
+      }
+      if (document.contributors) document.contributors.push(employee);
+      else document.contributors = [employee];
+    }
 
     try {
       return await this.documents.save(document);
@@ -119,8 +138,24 @@ export class ProjectsService {
   }
 
   //   Read
-  async findAllProjects() {
-    return await this.projects.find();
+  async findAllProjects(query: FilterProjectInput) {
+    const filterParam: FilterProjectInput = {};
+    if (query.title) {
+      filterParam.title = ILike(`${query.title}%`);
+    }
+    if (query.status) {
+      filterParam.status = query.status;
+    }
+    if (query.minRevenue && !query.maxRevenue) {
+      filterParam.revenue = MoreThanOrEqual(query.minRevenue);
+    }
+    if (!query.minRevenue && query.maxRevenue) {
+      filterParam.revenue = LessThanOrEqual(query.maxRevenue);
+    }
+    if (query.minRevenue && query.maxRevenue) {
+      filterParam.revenue = Between(query.minRevenue, query.maxRevenue);
+    }
+    return await this.projects.find(filterParam);
   }
   async findProjectById(id: number) {
     const project = await this.projects.findOne(id);
@@ -129,14 +164,19 @@ export class ProjectsService {
     }
     return project;
   }
-  async findAllDocuments(projectId: number) {
+  async findAllDocuments(projectId: number, query: FilterDocumentInput) {
     const project = await this.projects.findOne(projectId, {
       relations: ['documents'],
     });
     if (!project) {
       throw new NotFoundException(DNEerr.project);
     }
-    return project.documents;
+    if (!query.title) return project.documents;
+    const documents = await this.documents.find({
+      project,
+      title: ILike(`${query.title}%`),
+    });
+    return documents;
   }
   async findDocumentById(projectId: number, documentId: number) {
     const project = await this.projects.findOne(projectId);

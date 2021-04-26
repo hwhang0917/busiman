@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class UpdateDocumentInput {
   @ApiPropertyOptional()
@@ -9,4 +9,8 @@ export class UpdateDocumentInput {
   @ApiPropertyOptional()
   @IsString()
   readonly documentUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsNumber()
+  readonly contributorId?: number;
 }

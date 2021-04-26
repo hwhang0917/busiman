@@ -2,7 +2,14 @@ import { Client } from 'src/clients/entities/client.entity';
 import { Employee } from 'src/employees/entities/employee.entity';
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { Document } from './document.entity';
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { IsEnum, IsNumber, IsString } from 'class-validator';
 
 export enum Status {
@@ -35,6 +42,7 @@ export class Project extends CoreEntity {
   projectManager: Employee;
 
   @ManyToMany(() => Employee, (employee) => employee.assignedProjects)
+  @JoinTable()
   assignedMembers: Employee[];
 
   @ManyToOne(() => Client, (client) => client.projects, {

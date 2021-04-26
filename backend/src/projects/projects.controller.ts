@@ -6,14 +6,23 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Approved } from 'src/auth/decorators/approved.decorator';
 import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 import { X_JWT_HEADER } from 'src/common/common.constant';
 import { Employee } from 'src/employees/entities/employee.entity';
 import { CreateDocumentInput } from './dto/create-document.dto';
 import { CreateProjectInput } from './dto/create-project.dto';
+import {
+  FilterDocumentInput,
+  FilterDocumentParams,
+} from './dto/filter-documents.dto';
+import {
+  FilterProjectInput,
+  FilterProjectParams,
+} from './dto/filter-project.dto';
 import { UpdateDocumentInput } from './dto/update-document.dto';
 import { UpdateProjectInput } from './dto/update-project.dto';
 import { ProjectsService } from './projects.service';
@@ -22,14 +31,16 @@ import { ProjectsService } from './projects.service';
 @ApiHeader({
   name: X_JWT_HEADER,
   description: 'Login JWT(Json Web Token)',
+  required: true,
 })
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
   @Approved()
+  @ApiQuery({ type: FilterProjectParams })
   @Get()
-  getAllProjects() {
-    return this.projectsService.findAllProjects();
+  getAllProjects(@Query() query: FilterProjectInput) {
+    return this.projectsService.findAllProjects(query);
   }
 
   @Approved()
@@ -39,9 +50,13 @@ export class ProjectsController {
   }
 
   @Approved()
+  @ApiQuery({ type: FilterDocumentParams })
   @Get(':id/documents')
-  getDocuments(@Param('id') projectId: number) {
-    return this.projectsService.findAllDocuments(projectId);
+  getDocuments(
+    @Param('id') projectId: number,
+    @Query() query: FilterDocumentInput,
+  ) {
+    return this.projectsService.findAllDocuments(projectId, query);
   }
 
   @Approved()
@@ -77,6 +92,7 @@ export class ProjectsController {
   }
 
   @Approved()
+  @ApiBody({ type: UpdateProjectInput, required: false })
   @Put(':id')
   updateProject(
     @AuthUser() authUser: Employee,
@@ -91,6 +107,7 @@ export class ProjectsController {
   }
 
   @Approved()
+  @ApiBody({ type: UpdateDocumentInput, required: false })
   @Put(':projectId/documents/:docId')
   updateDocument(
     @AuthUser() authUser: Employee,
