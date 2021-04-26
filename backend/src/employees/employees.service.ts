@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Employee } from './entities/employee.entity';
 import { JwtService } from 'src/jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dto/login.dto';
@@ -19,6 +19,7 @@ import {
   InvalidErr,
   RequiredErr,
 } from 'src/errors/message.error';
+import { FilterAccountInput } from './dto/filter-account.dto';
 
 @Injectable()
 export class EmployeesService {
@@ -52,8 +53,8 @@ export class EmployeesService {
   }
 
   //   Read
-  async findAll(): Promise<Employee[]> {
-    return await this.employees.find();
+  async findAll(query: FilterAccountInput): Promise<Employee[]> {
+    return await this.employees.find(query);
   }
   async findById(id: number): Promise<Employee> {
     const employee = await this.employees.findOne(id, {
@@ -71,6 +72,9 @@ export class EmployeesService {
       throw new NotFoundException(DNEerr.employee);
     }
     return employee;
+  }
+  async searchByName(name: string) {
+    return await this.employees.find({ name: ILike(`${name}%`) });
   }
 
   //   Auth
@@ -98,8 +102,8 @@ export class EmployeesService {
   //   Update
   async updateAccount(
     authUser: Employee,
+    id: number,
     {
-      id,
       email,
       password,
       name,

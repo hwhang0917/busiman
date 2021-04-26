@@ -1,25 +1,40 @@
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { ApiHeader, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { X_JWT_HEADER } from 'src/common/common.constant';
 import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 import { Admin } from 'src/auth/decorators/admin.decorator';
 import { Approved } from 'src/auth/decorators/approved.decorator';
-import { UpdateAccountInput } from './dto/update-account.dto';
 import { EmployeesService } from './employees.service';
 import { Employee } from './entities/employee.entity';
-import { X_JWT_HEADER } from 'src/common/common.constant';
+import { UpdateAccountInput } from './dto/update-account.dto';
+import {
+  FilterAccountInput,
+  FilterAccountParams,
+} from './dto/filter-account.dto';
 
 @ApiTags('Employees')
 @ApiHeader({
   name: X_JWT_HEADER,
   description: 'Login JWT(Json Web Token)',
+  required: true,
 })
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
+
   @Approved()
+  @ApiQuery({ type: FilterAccountParams })
   @Get()
-  getAllEmployees() {
-    return this.employeesService.findAll();
+  getAllEmployees(@Query() query: FilterAccountInput) {
+    return this.employeesService.findAll(query);
   }
 
   @Approved()
@@ -35,7 +50,7 @@ export class EmployeesController {
     @AuthUser() authUser: Employee,
     @Body() updateDto: UpdateAccountInput,
   ) {
-    return this.employeesService.updateAccount(authUser, { id, ...updateDto });
+    return this.employeesService.updateAccount(authUser, id, { ...updateDto });
   }
 
   @Admin()
