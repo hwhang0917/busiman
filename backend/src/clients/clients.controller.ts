@@ -6,8 +6,9 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Approved } from 'src/auth/decorators/approved.decorator';
 import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 import { X_JWT_HEADER } from 'src/common/common.constant';
@@ -15,6 +16,7 @@ import { UpdateAccountInput } from 'src/employees/dto/update-account.dto';
 import { Employee } from 'src/employees/entities/employee.entity';
 import { ClientsService } from './clients.service';
 import { CreateClientInput } from './dto/create-client.dto';
+import { FilterClientInput, FilterClientParams } from './dto/filter-client.dto';
 
 @ApiTags('Clients')
 @ApiHeader({
@@ -25,9 +27,10 @@ import { CreateClientInput } from './dto/create-client.dto';
 export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
   @Approved()
+  @ApiQuery({ type: FilterClientParams })
   @Get()
-  getAllClients() {
-    return this.clientsService.findAll();
+  getAllClients(@Query() query: FilterClientInput) {
+    return this.clientsService.findAll(query);
   }
 
   @Approved()

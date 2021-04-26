@@ -4,6 +4,7 @@ import { Employee } from 'src/employees/entities/employee.entity';
 import { DNEerr } from 'src/errors/message.error';
 import { Repository } from 'typeorm';
 import { CreateClientInput } from './dto/create-client.dto';
+import { FilterClientInput } from './dto/filter-client.dto';
 import { UpdateClientInput } from './dto/update-client.dto';
 import { Client } from './entities/client.entity';
 
@@ -27,8 +28,8 @@ export class ClientsService {
   }
 
   //   Read
-  async findAll(): Promise<Client[]> {
-    return await this.clients.find();
+  async findAll(query: FilterClientInput): Promise<Client[]> {
+    return await this.clients.find(query);
   }
   async findById(id: number): Promise<Client> {
     const client = await this.clients.findOne(id);
