@@ -54,7 +54,14 @@ export class EmployeesService {
 
   //   Read
   async findAll(query: FilterAccountInput): Promise<Employee[]> {
-    return await this.employees.find(query);
+    const filterParam: FilterAccountInput = {};
+    if (query.name) {
+      filterParam.name = ILike(`${query.name}%`);
+    }
+    if (query.approvedByAdmin) {
+      filterParam.approvedByAdmin = query.approvedByAdmin;
+    }
+    return await this.employees.find(filterParam);
   }
   async findById(id: number): Promise<Employee> {
     const employee = await this.employees.findOne(id, {

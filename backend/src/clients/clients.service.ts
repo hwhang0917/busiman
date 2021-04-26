@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Employee } from 'src/employees/entities/employee.entity';
 import { DNEerr } from 'src/errors/message.error';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreateClientInput } from './dto/create-client.dto';
 import { FilterClientInput } from './dto/filter-client.dto';
 import { UpdateClientInput } from './dto/update-client.dto';
@@ -29,7 +29,14 @@ export class ClientsService {
 
   //   Read
   async findAll(query: FilterClientInput): Promise<Client[]> {
-    return await this.clients.find(query);
+    const filterParam: FilterClientInput = {};
+    if (query.name) {
+      filterParam.name = ILike(`${query.name}%`);
+    }
+    if (query.isOrganization) {
+      filterParam.isOrganization = query.isOrganization;
+    }
+    return await this.clients.find(filterParam);
   }
   async findById(id: number): Promise<Client> {
     const client = await this.clients.findOne(id);
