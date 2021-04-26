@@ -7,7 +7,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiHeader, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { X_JWT_HEADER } from 'src/common/common.constant';
 import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 import { Admin } from 'src/auth/decorators/admin.decorator';
@@ -44,6 +44,7 @@ export class EmployeesController {
   }
 
   @Approved()
+  @ApiBody({ type: UpdateAccountInput, required: false })
   @Put(':id')
   updateEmployee(
     @Param('id') id: number,

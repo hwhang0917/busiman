@@ -8,15 +8,15 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiHeader, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Approved } from 'src/auth/decorators/approved.decorator';
 import { AuthUser } from 'src/auth/decorators/auth-user.decorator';
 import { X_JWT_HEADER } from 'src/common/common.constant';
-import { UpdateAccountInput } from 'src/employees/dto/update-account.dto';
 import { Employee } from 'src/employees/entities/employee.entity';
 import { ClientsService } from './clients.service';
 import { CreateClientInput } from './dto/create-client.dto';
 import { FilterClientInput, FilterClientParams } from './dto/filter-client.dto';
+import { UpdateClientInput } from './dto/update-client.dto';
 
 @ApiTags('Clients')
 @ApiHeader({
@@ -49,10 +49,11 @@ export class ClientsController {
   }
 
   @Approved()
+  @ApiBody({ type: UpdateClientInput, required: false })
   @Put(':id')
   updateClient(
     @Param('id') id: number,
-    @Body() updateClientDto: UpdateAccountInput,
+    @Body() updateClientDto: UpdateClientInput,
   ) {
     return this.clientsService.update(id, updateClientDto);
   }
