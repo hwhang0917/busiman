@@ -80,9 +80,6 @@ export class EmployeesService {
     }
     return employee;
   }
-  async searchByName(name: string) {
-    return await this.employees.find({ name: ILike(`${name}%`) });
-  }
 
   //   Auth
   async login({ email, password }: LoginInput): Promise<LoginOutput> {
