@@ -8,3 +8,7 @@
 [![License](https://img.shields.io/github/license/hwhang0917/busiman)](https://github.com/hwhang0917/busiman/blob/master/LICENSE)
 
 > Business management platform for consultants
+
+## Guide
+
+1. Follow [Backend README guide](./backend/README.md).
