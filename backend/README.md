@@ -12,7 +12,7 @@
    DB_HOST=localhost        # Database Host Name
    DB_PORT=5432             # Database Port
    DB_USERNAME=postgres     # Database Username
-   DB_PASSWORD=1234      # Database Password
+   DB_PASSWORD=1234         # Database Password
    DB_NAME=busiman          # Database Name
    PRIVATE_KEY=test         # Private Key for JSON Web Token
    ```
