@@ -28,7 +28,7 @@ const isEnvDev = process.env.NODE_ENV === 'dev';
       isGlobal: true,
       envFilePath: '.env',
       validationSchema: Joi.object({
-        NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),
+        NODE_ENV: Joi.string().valid('dev', 'prod', 'test'),
         DB_HOST: Joi.string().required(),
         DB_PORT: Joi.string().required(),
         DB_USERNAME: Joi.string().required(),
